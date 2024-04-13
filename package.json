@@ -2,6 +2,7 @@
   "name": "pe-sdn301m-fa23-20231101-se160781db",
   "version": "0.0.0",
   "private": true,
+  "main": "./bin/www",
   "scripts": {
     "start": "nodemon ./bin/www"
   },
