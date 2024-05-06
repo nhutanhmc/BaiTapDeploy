@@ -5,6 +5,7 @@ const memberSchema = new Schema(
   {
     username: { type: String, require: true },
     password: { type: String, require: true },
+    mail: {type: String, require: true}
   },
   { timestamps: true }
 );

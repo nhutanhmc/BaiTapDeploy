@@ -9,11 +9,12 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
-
+const cors = require('cors');
 // Nhập tệp định tuyến
 const memberRouter = require("./routes/memberRouter");
 const coursesRouter = require("./routes/coursesRouter");
 const sectionsRouter = require("./routes/sectionsRouter");
+const carsRouter = require("./routes/carsRouter");
 const app = express();
 
 // Nhập thư viện dotenv và cấu hình các biến môi trường
@@ -33,7 +34,7 @@ app.use(
     saveUninitialized: true,
   })
 );
-
+app.use(cors());
 
 
 app.use(passport.initialize());
@@ -74,6 +75,7 @@ app.use(function (req, res, next) {
 app.use("/members", memberRouter);
 app.use("/courses", coursesRouter);
 app.use("/sections", sectionsRouter);
+app.use("/cars", carsRouter);
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
