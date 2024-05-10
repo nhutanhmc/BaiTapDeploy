@@ -7,7 +7,7 @@ class memberController {
   loginWithJWT(req, res, next) {
     let { username, password } = req.body;
     if (!username || !password) {
-      return res.json("Vui lòng nhâp đủ thông tin đăng nhập!");
+      return res.json("Vui lòng nhập đủ thông tin đăng nhập!");
     }
     Members.findOne({ username: username })
       .then((user) => {
@@ -18,22 +18,42 @@ class memberController {
           .compare(password, user.password)
           .then((result) => {
             if (!result) {
-              return res.json("Wrong password!");
+              return res.json("Sai mật khẩu!");
             }
-            const payload = { username: user.username};
-            const secretKey = "SE161473";
-            const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
-            res.cookie("token", token);
-            return res.json({ message: "Đăng nhập thành công!", token: token });
+            // Kiểm tra xem có token trong cookie không
+            if (req.cookies.token) {
+              // Giải mã token để kiểm tra tính hợp lệ
+              jwt.verify(req.cookies.token, "SE161473", (err, decoded) => {
+                if (err) {
+                  // Token hết hạn hoặc không hợp lệ, tạo mới token
+                  const payload = { username: user.username };
+                  const secretKey = "SE161473";
+                  const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
+                  res.cookie("token", token);
+                  return res.json({ message: "Đăng nhập thành công!", token: token });
+                } else {
+                  // Token hợp lệ, không cần tạo mới
+                  return res.json({ message: "Đăng nhập thành công!", token: req.cookies.token });
+                }
+              });
+            } else {
+              // Không có token trong cookie, tạo mới token
+              const payload = { username: user.username };
+              const secretKey = "SE161473";
+              const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
+              res.cookie("token", token);
+              return res.json({ message: "Đăng nhập thành công!", token: token });
+            }
           })
           .catch((err) => {
-            return res.json(err.message || "Error");
+            return res.json(err.message || "Lỗi");
           });
       })
       .catch((err) => {
-        return res.json(err.message || "Error");
+        return res.json(err.message || "Lỗi");
       });
   }
+  
 
   getLoginPage(req, res, next) {
     res.render("login/index");
