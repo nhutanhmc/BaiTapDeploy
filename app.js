@@ -12,8 +12,11 @@ const mongoose = require("mongoose");
 
 // Nhập tệp định tuyến
 const memberRouter = require("./routes/memberRouter");
-const coursesRouter = require("./routes/coursesRouter");
-const sectionsRouter = require("./routes/sectionsRouter");
+const staffsRouter = require("./routes/staffsRouter");
+const productTypeRouter = require("./routes/productTypeRouter");
+const gemstoneRouter = require("./routes/gemstoneRouter");
+const materialRouter = require("./routes/materialRouter");
+
 const app = express();
 
 // Nhập thư viện dotenv và cấu hình các biến môi trường
@@ -72,8 +75,10 @@ app.use(function (req, res, next) {
 
 // Thiết lập định tuyến cho các phần khác nhau của ứng dụng
 app.use("/members", memberRouter);
-app.use("/courses", coursesRouter);
-app.use("/sections", sectionsRouter);
+app.use("/staffsRouter", staffsRouter);
+app.use("/producttype", productTypeRouter);
+app.use("/gemstone", gemstoneRouter);
+app.use("/material", materialRouter);
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
