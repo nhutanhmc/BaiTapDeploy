@@ -9,13 +9,17 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
-
+const cors = require('cors');
 // Nhập tệp định tuyến
 const memberRouter = require("./routes/memberRouter");
-const coursesRouter = require("./routes/coursesRouter");
-const sectionsRouter = require("./routes/sectionsRouter");
-const app = express();
+const staffsRouter = require("./routes/staffsRouter");
+const productTypeRouter = require("./routes/productTypeRouter");
+const gemstoneRouter = require("./routes/gemstoneRouter");
+const materialRouter = require("./routes/materialRouter");
+const productRouter = require("./routes/productRouter");
 
+const app = express();
+app.use(cors());
 // Nhập thư viện dotenv và cấu hình các biến môi trường
 const dotenv = require("dotenv");
 dotenv.config();
@@ -46,7 +50,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Sử dụng các biến môi trường để kết nối với cơ sở dữ liệu MongoDB
+// Sử dụng các biến môi trường để kết nối với cơ sở dữ liệuw MongoDB
 const url = `${process.env.DATABASE_TYPE}${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_SERVER}/${process.env.DATABASE_NAME}`;
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -72,8 +76,11 @@ app.use(function (req, res, next) {
 
 // Thiết lập định tuyến cho các phần khác nhau của ứng dụng
 app.use("/members", memberRouter);
-app.use("/courses", coursesRouter);
-app.use("/sections", sectionsRouter);
+app.use("/staffsRouter", staffsRouter);
+app.use("/producttype", productTypeRouter);
+app.use("/gemstone", gemstoneRouter);
+app.use("/material", materialRouter);
+app.use("/product", productRouter);
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
