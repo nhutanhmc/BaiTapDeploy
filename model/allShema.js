@@ -15,6 +15,7 @@ const ProductTypeSchema = new mongoose.Schema({
 
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    img: { type: String },
     size: { type: String },
     weight: { type: Number },
     description: { type: String },

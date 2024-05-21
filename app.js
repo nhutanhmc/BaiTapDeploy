@@ -16,6 +16,7 @@ const staffsRouter = require("./routes/staffsRouter");
 const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
 const materialRouter = require("./routes/materialRouter");
+const productRouter = require("./routes/productRouter");
 
 const app = express();
 app.use(cors());
@@ -79,6 +80,7 @@ app.use("/staffsRouter", staffsRouter);
 app.use("/producttype", productTypeRouter);
 app.use("/gemstone", gemstoneRouter);
 app.use("/material", materialRouter);
+app.use("/product", productRouter);
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
