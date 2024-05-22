@@ -84,6 +84,9 @@ app.use("/product", productRouter);
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
+app.use("/home",(req,res)=>{
+  res.send("123")
+})
 
 // Chuyển hướng trang chủ tới trang đăng nhập nếu chưa đăng nhập
 app.use((req, res, next) => {

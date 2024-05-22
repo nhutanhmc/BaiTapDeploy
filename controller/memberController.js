@@ -6,6 +6,7 @@ const Members = require("../model/memberModel");
 class memberController {
   loginWithJWT(req, res, next) {
     let { username, password } = req.body;
+    console.log(req.body);
     if (!username || !password) {
       return res.json("Vui lòng nhập đủ thông tin đăng nhập!");
     }
