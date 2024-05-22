@@ -2,13 +2,17 @@ const passport = require("passport");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Staff = require("../model/staffModel");
+const { log } = require("console");
 
 class staffController {
   loginWithJWT(req, res, next) {
     let { username, password } = req.body;
+    console.log('====================================');
     if (!username || !password) {
-      return res.json("Vui lòng nhập đủ thông tin đăng nhập!");
+
+      return res.json("Vui lòng nhập đủ thông tin đăng nhập!");// no res in login
     }
+
     Staff.findOne({ username: username })
       .then((user) => {
         if (!user) {
