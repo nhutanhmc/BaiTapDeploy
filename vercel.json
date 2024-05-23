@@ -1,0 +1,16 @@
+{
+    "version": 2,
+    "name": "bai-tap-deploy",
+    "builds": [
+      {
+        "src": "./bin/www",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "./bin/www"
+      }
+    ]
+  }
