@@ -6,16 +6,16 @@ class materialController {
       return new Promise((resolve, reject) => {
         Material.find({}).then((materials) => {
           if (materials.length > 0) {
-            return resolve(res.status(200).json(materials));
+            return resolve(res.status(200).json({ success: true, materials }));
           } else {
-            return resolve(res.status(200).json("Không có material nào!"));
+            return resolve(res.status(200).json({ success: false, message: "Không có material nào!" }));
           }
         });
       }).catch((err) => {
-        return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+        return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
       });
     } catch (err) {
-      return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+      return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
 
@@ -24,16 +24,16 @@ class materialController {
       Material.findById({ _id: req.params.id })
         .then((material) => {
           if (material) {
-            return res.status(200).json(material);
+            return res.status(200).json({ success: true, material });
           } else {
-            return res.json("Material không tồn tại!");
+            return res.json({ success: false, message: "Material không tồn tại!" });
           }
         })
         .catch((err) => {
-          return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+          return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
         });
     } catch (err) {
-      return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+      return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
 
@@ -43,32 +43,32 @@ class materialController {
       let newWeight = req.body.weight;
       let newSize = req.body.size?.trim();
       if (!newName || newName === "") {
-        return res.json("Vui lòng nhập name để tạo mới");
+        return res.json({ success: false, message: "Vui lòng nhập name để tạo mới" });
       }
       if (!newWeight || newWeight === "") {
-        return res.json("Vui lòng nhập weight để tạo mới");
+        return res.json({ success: false, message: "Vui lòng nhập weight để tạo mới" });
       }
       if (!newSize || newSize === "") {
-        return res.json("Vui lòng nhập size để tạo mới");
+        return res.json({ success: false, message: "Vui lòng nhập size để tạo mới" });
       }
       Material.findOne({ name: newName })
         .then((materials) => {
           if (materials) {
-            return res.json("Material này đã tồn tại. Vui lòng nhập name khác!");
+            return res.json({ success: false, message: "Material này đã tồn tại. Vui lòng nhập name khác!" });
           }
           Material.create({ name: newName, weight: newWeight, size: newSize })
             .then((result) => {
-              return res.status(201).json(result);
+              return res.status(201).json({ success: true, result });
             })
             .catch((err) => {
-              return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+              return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
             });
         })
         .catch((err) => {
-          return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+          return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
         });
     } catch (err) {
-      return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+      return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
 
@@ -77,25 +77,25 @@ class materialController {
       Material.findById({ _id: req.params.id })
         .then((materials) => {
           if (!materials) {
-            return res.json("Material không tồn tại!");
+            return res.json({ success: false, message: "Material không tồn tại!" });
           }
           Material.deleteOne({ _id: req.params.id })
             .then((result) => {
               if (result.deletedCount === 1) {
-                return res.status(200).json("Xóa dữ liệu thành công!");
+                return res.status(200).json({ success: true, message: "Xóa dữ liệu thành công!" });
               } else {
-                return res.json("Không có dữ liệu nào được xóa!");
+                return res.json({ success: false, message: "Không có dữ liệu nào được xóa!" });
               }
             })
             .catch((err) => {
-              return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+              return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
             });
         })
         .catch((err) => {
-          return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+          return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
         });
     } catch (err) {
-      return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+      return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
 
@@ -105,27 +105,28 @@ class materialController {
       let updateWeight = req.body.weight;
       let updateSize = req.body.size?.trim();
       if (!updateName) {
-        return res.json("Vui lòng không để trống name!");
+        return res.json({ success: false, message: "Vui lòng không để trống name!" });
       }
       if (!updateWeight) {
-        return res.json("Vui lòng không để trống weight!");
+        return res.json({ success: false, message: "Vui lòng không để trống weight!" });
       }
       if (!updateSize) {
-        return res.json("Vui lòng không để trống size!");
+        return res.json({ success: false, message: "Vui lòng không để trống size!" });
       }
       Material.findByIdAndUpdate(req.params.id, { name: updateName, weight: updateWeight, size: updateSize }, { new: true })
         .then((material) => {
           if (!material) {
-            return res.json("Material không tồn tại!");
+            return res.json({ success: false, message: "Material không tồn tại!" });
           }
-          return res.json(material);
+          return res.json({ success: true, material });
         })
         .catch((err) => {
-          return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+          return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
         });
     } catch (err) {
-      return res.status(err.status || 500).json(err.message || "Lỗi chưa xác định!");
+      return res.status(err.status || 500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
 }
+
 module.exports = new materialController();
