@@ -17,6 +17,7 @@ const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
 const materialRouter = require("./routes/materialRouter");
 const productRouter = require("./routes/productRouter");
+const customerRouter=require("./routes/customerRouter")
 
 const app = express();
 app.use(cors());
@@ -81,12 +82,11 @@ app.use("/producttype", productTypeRouter);
 app.use("/gemstone", gemstoneRouter);
 app.use("/material", materialRouter);
 app.use("/product", productRouter);
+app.use("/customer",customerRouter)
 app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
-app.use("/home",(req,res)=>{
-  res.send("123")
-})
+
 
 // Chuyển hướng trang chủ tới trang đăng nhập nếu chưa đăng nhập
 app.use((req, res, next) => {

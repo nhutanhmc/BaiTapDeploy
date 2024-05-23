@@ -7,10 +7,9 @@ const { log } = require("console");
 class staffController {
   loginWithJWT(req, res, next) {
     let { username, password } = req.body;
-    console.log('====================================');
+    console.log(req.body);
     if (!username || !password) {
-
-      return res.json("Vui lòng nhập đủ thông tin đăng nhập!");// no res in login
+      return res.json("Vui lòng nhập đủ thông tin đăng nhập!");// no res
     }
 
     Staff.findOne({ username: username })
