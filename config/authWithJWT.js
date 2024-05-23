@@ -18,3 +18,14 @@ module.exports = {
     });
   },
 };
+
+module.exports.checkAdminRole = function (req, res, next) {
+  console.log(`Role hiện tại: ${req.user ? req.user.role : 'Không xác định'}`);
+
+  if (req.user && req.user.role === 'Admin') {
+    next();
+  } else {
+    return res.status(403).json({ error: 'Chỉ admin mới có quyền truy cập!' });
+  }
+};
+

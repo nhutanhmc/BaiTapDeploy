@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
 const ProductTypeSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -9,8 +8,8 @@ const ProductTypeSchema = new mongoose.Schema({
     price: { type: Number },
     productType: { type: String },
     color: { type: String },
-    materialName: { type: String, ref: 'Material' },
-    gemstoneName: { type: String, ref: 'Gemstone' }
+    material: { type: mongoose.Schema.Types.ObjectId, ref: 'Material' },
+    gemstone: { type: mongoose.Schema.Types.ObjectId, ref: 'Gemstone' }
 });
 
 const ProductSchema = new mongoose.Schema({
@@ -21,11 +20,9 @@ const ProductSchema = new mongoose.Schema({
     price: { type: Number },
     productType: { type: String },
     color: { type: String },
-    materialName: { type: String, ref: 'Material' },
-    gemstoneName: { type: String, ref: 'Gemstone' },
+    material: { type: mongoose.Schema.Types.ObjectId, ref: 'Material' },
+    gemstone: { type: mongoose.Schema.Types.ObjectId, ref: 'Gemstone' },
     productTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProductType' }],
-    gemstones: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Gemstone' }],
-    materials: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Material' }],
     orderDetails: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderDetail' }]
 });
 
@@ -55,7 +52,6 @@ const OrderDetailSchema = new mongoose.Schema({
 });
 
 const OrderSchema = new mongoose.Schema({
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     totalPrice: { type: Number, required: true },
     quantity: { type: Number, required: true },
     description: { type: String },
@@ -75,12 +71,12 @@ const CustomerSchema = new mongoose.Schema({
 });
 
 const PaymentSchema = new mongoose.Schema({
-    cash: { type: Boolean },
+    cash: { type: Number },
     bank: { type: String }
 });
 
 const StoreSchema = new mongoose.Schema({
-    currentQuality: { type: Number, required: true },
+    currentQuantity: { type: Number, required: true },
     phone: { type: String },
     location: { type: String },
     lastUpdateInven: { type: Date, default: Date.now },
@@ -90,9 +86,9 @@ const StoreSchema = new mongoose.Schema({
 const StaffSchema = new mongoose.Schema({
     name: { type: String, required: true },
     age: { type: Number },
-    username: { type: String, require: true },
-    password: { type: String, require: true },
-    role: {type: String, require: true}
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    role: {type: String, required: true}
 });
 
 // Create the models

@@ -11,7 +11,7 @@ const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const cors = require('cors');
 // Nhập tệp định tuyến
-const memberRouter = require("./routes/memberRouter");
+
 const staffsRouter = require("./routes/staffsRouter");
 const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
@@ -74,7 +74,7 @@ app.use(function (req, res, next) {
 });
 
 // Thiết lập định tuyến cho các phần khác nhau của ứng dụng
-app.use("/members", memberRouter);
+
 app.use("/staffsRouter", staffsRouter);
 app.use("/producttype", productTypeRouter);
 app.use("/gemstone", gemstoneRouter);

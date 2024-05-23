@@ -7,3 +7,4 @@ module.exports = {
     res.status(401).redirect("/members/login");
   },
 };
+

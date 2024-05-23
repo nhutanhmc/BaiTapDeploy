@@ -20,30 +20,13 @@ class staffController {
             if (!result) {
               return res.json("Sai mật khẩu!");
             }
-            // Kiểm tra xem có token trong cookie không
-            if (req.cookies.token) {
-              // Giải mã token để kiểm tra tính hợp lệ
-              jwt.verify(req.cookies.token, "SE161473", (err, decoded) => {
-                if (err) {
-                  // Token hết hạn hoặc không hợp lệ, tạo mới token
-                  const payload = { username: user.username };
-                  const secretKey = "SE161473";
-                  const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
-                  res.cookie("token", token);
-                  return res.json({ message: "Đăng nhập thành công!", token: token });
-                } else {
-                  // Token hợp lệ, không cần tạo mới
-                  return res.json({ message: "Đăng nhập thành công!", token: req.cookies.token });
-                }
-              });
-            } else {
-              // Không có token trong cookie, tạo mới token
-              const payload = { username: user.username };
-              const secretKey = "SE161473";
-              const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
-              res.cookie("token", token);
-              return res.json({ message: "Đăng nhập thành công!", token: token });
-            }
+            // Tạo mới token mỗi khi đăng nhập thành công
+            console.log(`User role: ${user.role}`);
+            const payload = { username: user.username, role: user.role };
+            const secretKey = "SE161473";
+            const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
+            res.cookie("token", token);
+            return res.json({ message: "Đăng nhập thành công!", token: token });
           })
           .catch((err) => {
             return res.json(err.message || "Lỗi");

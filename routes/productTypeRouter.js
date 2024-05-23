@@ -1,9 +1,9 @@
 var express = require("express");
 const productTypeController = require("../controller/productTypeController");
-const { authenticateToken } = require("../config/authWithJWT");
+const { authenticateToken, checkAdminRole } = require("../config/authWithJWT");
 var router = express.Router();
 
-router.route("/").all(authenticateToken).get(productTypeController.getProductTypeList_Api).post(productTypeController.createProductType_Api);
+router.route("/").all(authenticateToken).all(checkAdminRole).get(productTypeController.getProductTypeList_Api).post(productTypeController.createProductType_Api);
 router
   .route("/:id")
   .all(authenticateToken)
