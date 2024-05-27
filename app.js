@@ -10,6 +10,9 @@ const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swaggerConfig');
+
 // Nhập tệp định tuyến
 
 const staffsRouter = require("./routes/staffsRouter");
@@ -17,6 +20,7 @@ const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
 const materialRouter = require("./routes/materialRouter");
 const imageRouter = require("./routes/imageRouter");
+const categoryRouter = require("./routes/categoryRouter");
 
 const app = express();
 app.use(cors());
@@ -75,12 +79,13 @@ app.use(function (req, res, next) {
 });
 
 // Thiết lập định tuyến cho các phần khác nhau của ứng dụng
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/staffsRouter", staffsRouter);
 app.use("/producttype", productTypeRouter);
 app.use("/gemstone", gemstoneRouter);
 app.use("/material", materialRouter);
 app.use("/images", imageRouter);
+app.use("/category", categoryRouter);
 
 app.use("/errorPage", (req, res) => {
   res.render("error/index");

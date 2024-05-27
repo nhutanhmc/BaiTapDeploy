@@ -4,7 +4,7 @@ class productTypeController {
   
   async getProductTypeList_Api(req, res, next) {
     try {
-      const productTypes = await ProductType.find({});
+      const productTypes = await ProductType.find({}).populate('categoryID');
       if (productTypes.length > 0) {
         return res.status(200).json({ success: true, productTypes });
       } else {
@@ -15,10 +15,9 @@ class productTypeController {
     }
   }
 
-  
   async getProductTypeById_Api(req, res, next) {
     try {
-      const productType = await ProductType.findById(req.params.id);
+      const productType = await ProductType.findById(req.params.id).populate('categoryID');
       if (productType) {
         return res.status(200).json({ success: true, productType });
       } else {
@@ -29,7 +28,6 @@ class productTypeController {
     }
   }
 
-  
   async createProductType_Api(req, res, next) {
     try {
       let newProductName = req.body.name?.trim();
@@ -51,7 +49,6 @@ class productTypeController {
     }
   }
 
-  
   async deleteProductTypeById_Api(req, res, next) {
     try {
       const productType = await ProductType.findById(req.params.id);
@@ -69,7 +66,6 @@ class productTypeController {
     }
   }
 
-  
   async updateProductTypeById_Api(req, res, next) {
     try {
       let updateProductName = req.body.name?.trim();
@@ -84,7 +80,7 @@ class productTypeController {
         req.params.id,
         req.body,
         { new: true }
-      );
+      ).populate('categoryID');
       if (!updatedProductType) {
         return res.status(404).json({ success: false, message: "ProductType không tồn tại!" });
       }

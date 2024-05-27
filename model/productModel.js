@@ -7,11 +7,10 @@ const ProductSchema = new Schema({
     weight: { type: Number },
     description: { type: String },
     price: { type: Number },
-    productType: { type: String },
     color: { type: String },
-    materialName: { type: String, ref: 'Material' },
-    gemstoneName: { type: String, ref: 'Gemstone' },
-    productTypes: { type: String, ref: 'ProductType' },
+    materialID: { type: Schema.Types.ObjectId, ref: 'Material' },
+    gemstoneID: { type: Schema.Types.ObjectId, ref: 'Gemstone' },
+    productTypeID: { type: Schema.Types.ObjectId, ref: 'ProductType' },
     imageLink: { type: String, required: true }
 });
 

@@ -22,8 +22,7 @@ const ProductSchema = new mongoose.Schema({
     color: { type: String },
     material: { type: mongoose.Schema.Types.ObjectId, ref: 'Material' },
     gemstone: { type: mongoose.Schema.Types.ObjectId, ref: 'Gemstone' },
-    productTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProductType' }],
-    orderDetails: [{ type: mongoose.Schema.Types.ObjectId, ref: 'OrderDetail' }]
+    productTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProductType' }]
 });
 
 const ProductCategorySchema = new mongoose.Schema({

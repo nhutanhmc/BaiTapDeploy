@@ -26,7 +26,7 @@ class staffController {
             const secretKey = "SE161473";
             const token = jwt.sign(payload, secretKey, { expiresIn: "1d" });
             res.cookie("token", token);
-            return res.json({ success: true, message: "Đăng nhập thành công!", token: token });
+            return res.json({ success: true, message: "Đăng nhập thành công!", token: token, role: user.role });
           })
           .catch((err) => {
             return res.json({ success: false, message: err.message || "Lỗi" });
@@ -36,6 +36,7 @@ class staffController {
         return res.json({ success: false, message: err.message || "Lỗi" });
       });
   }
+
 
   logout(req, res, next) {
     req.logout(() => {
