@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const createError = require("http-errors");
 
+const swaggerSpec = require("./config/swaggerConfig");
 const staffsRouter = require("./routes/staffsRouter");
 const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
