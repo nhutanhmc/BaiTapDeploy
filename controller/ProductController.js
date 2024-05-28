@@ -61,6 +61,17 @@ class ProductController {
 
     async getAllProduct_Api(req, res) {
         try {
+            // Lấy giá trị page và sl từ query parameters, nếu không có thì mặc định là 1 và 5
+            const page = parseInt(req.query.page) || 1;
+            const sl = parseInt(req.query.sl) || 5;
+    
+            // Tính toán số lượng tài liệu cần bỏ qua
+            const skip = (page - 1) * sl;
+    
+            // Đếm tổng số sản phẩm hiện có trong cơ sở dữ liệu
+            const totalProducts = await Product.countDocuments();
+    
+            // Lấy danh sách sản phẩm theo phân trang
             const products = await Product.find({})
                 .populate('materialID')
                 .populate('gemstoneID')
@@ -69,10 +80,14 @@ class ProductController {
                     populate: {
                         path: 'categoryID' // Populate categoryID for productTypeID
                     }
-                });
+                })
+                .skip(skip)
+                .limit(sl);
     
             return res.status(200).json({
                 success: true,
+                totalFetched: products.length, // Tổng số lượng sản phẩm được lấy ra
+                totalProducts, // Tổng số lượng sản phẩm hiện tại
                 products
             });
         } catch (err) {
@@ -83,6 +98,8 @@ class ProductController {
             });
         }
     }
+    
+    
 
     async deleteProduct_Api(req, res) {
         try {

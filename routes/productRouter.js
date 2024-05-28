@@ -79,6 +79,17 @@ router.post('/', upload.single('image'), ProductController.uploadImage_Api);
  *   get:
  *     summary: Get all products
  *     tags: [Product]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: The page number
+ *       - in: query
+ *         name: sl
+ *         schema:
+ *           type: integer
+ *           description: The number of products per page
  *     responses:
  *       200:
  *         description: List of all products
