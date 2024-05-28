@@ -16,7 +16,7 @@ const staffsRouter = require("./routes/staffsRouter");
 const productTypeRouter = require("./routes/productTypeRouter");
 const gemstoneRouter = require("./routes/gemstoneRouter");
 const materialRouter = require("./routes/materialRouter");
-const imageRouter = require("./routes/imageRouter");
+const imageRouter = require("./routes/productRouter");
 const categoryRouter = require("./routes/categoryRouter");
 
 const swaggerUi = require("swagger-ui-express");
@@ -73,7 +73,7 @@ app.use("/staffsRouter", staffsRouter);
 app.use("/producttype", productTypeRouter);
 app.use("/gemstone", gemstoneRouter);
 app.use("/material", materialRouter);
-app.use("/images", imageRouter);
+app.use("/products", imageRouter);
 app.use("/category", categoryRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

@@ -4,7 +4,7 @@ const Material = require('../model/materialModel');
 const Gemstone = require('../model/gemstoneModel');
 const ProductType = require('../model/productTypeModel');
 
-class ImageController {
+class ProductController {
     async uploadImage_Api(req, res) {
         try {
             const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID } = req.body;
@@ -64,8 +64,13 @@ class ImageController {
             const products = await Product.find({})
                 .populate('materialID')
                 .populate('gemstoneID')
-                .populate('productTypeID');
-
+                .populate({
+                    path: 'productTypeID',
+                    populate: {
+                        path: 'categoryID' // Populate categoryID for productTypeID
+                    }
+                });
+    
             return res.status(200).json({
                 success: true,
                 products
@@ -108,7 +113,7 @@ class ImageController {
     async updateProduct_Api(req, res) {
         try {
             const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID } = req.body;
-
+    
             // Kiểm tra các ID liên quan
             if (materialID && !await Material.findById(materialID)) {
                 return res.status(400).json({
@@ -128,24 +133,25 @@ class ImageController {
                     message: "ProductType không tồn tại!"
                 });
             }
-
+    
+            const productType = await ProductType.findById(productTypeID);
+            const category = await Category.findById(productType.categoryID);
+    
             const updatedProduct = await Product.findByIdAndUpdate(
                 req.params.id,
                 {
-                    name, size, weight, description, price, color, materialID, gemstoneID, productTypeID
+                    name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, categoryID: category._id
                 },
                 { new: true }
-            ).populate('materialID')
-             .populate('gemstoneID')
-             .populate('productTypeID');
-
+            ).populate('materialID').populate('gemstoneID').populate('productTypeID').populate('categoryID');
+    
             if (!updatedProduct) {
                 return res.status(404).json({
                     success: false,
                     message: "Product không tồn tại!"
                 });
             }
-
+    
             return res.status(200).json({
                 success: true,
                 message: "Product updated successfully",
@@ -161,4 +167,4 @@ class ImageController {
     }
 }
 
-module.exports = new ImageController();
+module.exports = new ProductController();
