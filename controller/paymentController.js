@@ -5,7 +5,7 @@ const vnpayConfig = require('../config/vnpayConfig');
 const querystring = require('querystring');
 
 class paymentController {
-  getPaymentList_Api(req, res, next) {
+ async getPaymentList_Api(req, res, next) {
     try {
       // console.log("kiet")
       return new Promise((resolve, reject) => {
@@ -13,7 +13,7 @@ class paymentController {
           if (Payment.length > 0) {
             return resolve(res.status(200).json(payment));
           } else {
-            return resolve(res.status(200).json("Không có Payment nào!"));
+            return resolve(res.status(200).json("Không có Payment nào!"));   
           }
         });
       }).catch((err) => {
@@ -83,7 +83,7 @@ class paymentController {
     vnp_Params = sortObject(vnp_Params);
     let signData = querystring.stringify(vnp_Params, { encode: false });
     let hmac = crypto.createHmac("sha512", secretKey);
-    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+    let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
     vnp_Params['vnp_SecureHash'] = signed;
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
@@ -110,7 +110,7 @@ class paymentController {
       vnp_Params = sortObject(vnp_Params);
       let signData = querystring.stringify(vnp_Params, { encode: false });
       let hmac = crypto.createHmac("sha512", vnpayConfig.vnp_HashSecret);
-      let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+      let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
       vnp_Params['vnp_SecureHash'] = signed;
 
       let queryUrl = vnpayConfig.vnp_Url + '?' + querystring.stringify(vnp_Params, { encode: false });
