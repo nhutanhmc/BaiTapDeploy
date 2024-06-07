@@ -1,13 +1,13 @@
-// passportConfig.js
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const Staff = require('../model/staffModel'); // Đường dẫn đến model Staff
+const Staff = require('../model/staffModel');
+require('dotenv').config();
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: "484778063646-2pi0ic1a415eav8j68pb1925om9vqnc4.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/staffsRouter/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -28,7 +28,7 @@ passport.use(
   )
 );
 
-// Các phương thức serializeUser và deserializeUser (nếu cần)
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
