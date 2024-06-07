@@ -90,6 +90,11 @@ router.post('/', upload.single('image'), ProductController.uploadImage_Api);
  *         schema:
  *           type: integer
  *           description: The number of products per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *           description: The name of the product to search for
  *     responses:
  *       200:
  *         description: List of all products
@@ -100,6 +105,7 @@ router.post('/', upload.single('image'), ProductController.uploadImage_Api);
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
+
 router.get('/', ProductController.getAllProduct_Api);
 
 /**

@@ -3,14 +3,14 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
     name: { type: String, required: true },
-    size: { type: String },
-    weight: { type: Number },
-    description: { type: String },
-    price: { type: Number },
-    color: { type: String },
-    materialID: { type: Schema.Types.ObjectId, ref: 'Material' },
-    gemstoneID: { type: Schema.Types.ObjectId, ref: 'Gemstone' },
-    productTypeID: { type: Schema.Types.ObjectId, ref: 'ProductType' },
+    size: { type: String, required: true },
+    weight: { type: Number, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    color: { type: String, required: true },
+    materialID: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
+    gemstoneID: { type: Schema.Types.ObjectId, ref: 'Gemstone', required: true },
+    productTypeID: { type: Schema.Types.ObjectId, ref: 'ProductType', required: true },
     imageLink: { type: String, required: true }
 });
 

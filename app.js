@@ -4,7 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
-const passport = require("passport");
+
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
@@ -20,6 +20,7 @@ const imageRouter = require("./routes/productRouter");
 const categoryRouter = require("./routes/categoryRouter");
 
 const swaggerUi = require("swagger-ui-express");
+const passport = require('./config/passportConfig');
 
 const app = express();
 app.use(cors());
@@ -37,6 +38,7 @@ app.use(
     saveUninitialized: true,
   })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -82,12 +84,6 @@ app.use("/errorPage", (req, res) => {
   res.render("error/index");
 });
 
-app.use((req, res, next) => {
-  if (req.originalUrl === "/") {
-    return res.redirect("/members/login");
-  }
-  next();
-});
 
 app.use(function (req, res, next) {
   next(createError(404));
