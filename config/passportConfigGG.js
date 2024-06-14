@@ -8,9 +8,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.NODE_ENV === 'production'
-        ? 'https://baitapdeploy-production.up.railway.app/staffsRouter/auth/google/callback'
-        : 'http://localhost:3000/staffsRouter/auth/google/callback'
+      callbackURL: "/staffsRouter/auth/google/callback"
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -29,6 +27,7 @@ passport.use(
     }
   )
 );
+
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

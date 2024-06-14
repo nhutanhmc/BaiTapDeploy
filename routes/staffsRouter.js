@@ -15,6 +15,7 @@ router.get('/auth/google/callback',
   passport.authenticate('google'), 
   staffController.googleAuthCallback);
 
+  router.post('/auth/firebase', staffController.firebaseAuth);
 // staffsRouter.js
 /**
  * @swagger
@@ -48,17 +49,6 @@ router.get('/auth/google/callback',
  */
 router.post('/loginWithJWT', staffController.loginWithJWT);
 
-/**
- * @swagger
- * /staffsRouter/logout:
- *   get:
- *     summary: Logout
- *     tags: [Staff]
- *     responses:
- *       200:
- *         description: Logout successful
- */
-router.get('/logout', staffController.logout);
 
 /**
  * @swagger
