@@ -3,6 +3,7 @@ const Product = require('../model/productModel');
 const Material = require('../model/materialModel');
 const Gemstone = require('../model/gemstoneModel');
 const ProductType = require('../model/productTypeModel');
+const Image = require('../model/imageModel');
 
 class ProductController {
     async uploadImage_Api(req, res) {
@@ -29,21 +30,29 @@ class ProductController {
                 });
             }
 
-            if (!req.file) {
+            if (!req.files || req.files.length === 0) {
                 return res.status(400).json({
                     success: false,
-                    message: "No file uploaded"
+                    message: "No files uploaded"
                 });
             }
 
-            // Upload image to Cloudinary
-            const result = await cloudinary.uploader.upload(req.file.path);
-
-            // Create new product with image link
+            // Create new product
             const newProduct = await Product.create({
-                name, size, weight, description, price, color, materialID, gemstoneID, productTypeID,
-                imageLink: result.secure_url
+                name, size, weight, description, price, color, materialID, gemstoneID, productTypeID
             });
+
+            // Upload images to Cloudinary and save references
+            const imageLinks = [];
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path);
+                const newImage = await Image.create({ productID: newProduct._id, imageLink: result.secure_url });
+                imageLinks.push(newImage._id);
+            }
+
+            // Update product with image links
+            newProduct.imageIDs = imageLinks;
+            await newProduct.save();
 
             return res.status(201).json({
                 success: true,
@@ -87,6 +96,7 @@ class ProductController {
                         path: 'categoryID' // Populate categoryID for productTypeID
                     }
                 })
+                .populate('imageIDs') // Populate imageIDs to get image details
                 .skip(skip)
                 .limit(sl);
     
@@ -104,6 +114,7 @@ class ProductController {
             });
         }
     }
+    
     
     
     

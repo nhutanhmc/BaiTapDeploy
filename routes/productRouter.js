@@ -2,76 +2,52 @@ const express = require('express');
 const router = express.Router();
 const ProductController = require('../controller/ProductController');
 const upload = require("../config/uploadMiddleware");
-const mongoose = require('mongoose'); // Add this line
-
-const ProductSchema = require('../model/productModel'); // Import ProductSchema
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Product:
- *       type: object
- *       required:
- *         - name
- *         - imageLink
- *       properties:
- *         name:
- *           type: string
- *           description: The name of the product.
- *         size:
- *           type: string
- *           description: The size of the product.
- *         weight:
- *           type: number
- *           description: The weight of the product.
- *         description:
- *           type: string
- *           description: The description of the product.
- *         price:
- *           type: number
- *           description: The price of the product.
- *         color:
- *           type: string
- *           description: The color of the product.
- *         materialID:
- *           type: string
- *           format: uuid
- *           description: The ID of the material associated with the product.
- *         gemstoneID:
- *           type: string
- *           format: uuid
- *           description: The ID of the gemstone associated with the product.
- *         productTypeID:
- *           type: string
- *           format: uuid
- *           description: The ID of the product type associated with the product.
- *         imageLink:
- *           type: string
- *           description: The link to the image of the product.
- */
 
 /**
  * @swagger
  * /products:
  *   post:
- *     summary: Upload a product image
+ *     summary: Upload product images
  *     tags: [Product]
  *     requestBody:
  *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             type: object
+ *             properties:
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *               name:
+ *                 type: string
+ *               size:
+ *                 type: string
+ *               weight:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               color:
+ *                 type: string
+ *               materialID:
+ *                 type: string
+ *               gemstoneID:
+ *                 type: string
+ *               productTypeID:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Product created successfully
  *       400:
- *         description: Bad request (e.g., missing image or invalid format)
+ *         description: Bad request (e.g., missing images or invalid format)
  *       500:
  *         description: Internal server error
  */
-router.post('/', upload.single('image'), ProductController.uploadImage_Api);
+router.post('/', upload.array('images'), ProductController.uploadImage_Api);
 
 /**
  * @swagger

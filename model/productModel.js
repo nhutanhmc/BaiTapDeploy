@@ -11,7 +11,7 @@ const ProductSchema = new Schema({
     materialID: { type: Schema.Types.ObjectId, ref: 'Material', required: true },
     gemstoneID: { type: Schema.Types.ObjectId, ref: 'Gemstone', required: true },
     productTypeID: { type: Schema.Types.ObjectId, ref: 'ProductType', required: true },
-    imageLink: { type: String, required: true }
+    imageIDs: [{ type: Schema.Types.ObjectId, ref: 'Image' }]
 });
 
 const Product = mongoose.model("Product", ProductSchema);
