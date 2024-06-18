@@ -81,7 +81,17 @@ class ProductController {
             const skip = (page - 1) * sl;
     
             // Tạo điều kiện tìm kiếm
-            const searchCondition = searchQuery ? { name: { $regex: searchQuery, $options: 'i' } } : {};
+            let searchCondition = {};
+            if (searchQuery) {
+                const searchTerms = searchQuery.split(' ').filter(term => term.trim() !== '');
+                searchCondition = {
+                    name: { $all: searchTerms.map(term => new RegExp(term, 'i')) }
+                };
+            }
+    
+            // Lấy giá trị sort từ query parameters, nếu có
+            const sortOrder = req.query.sort === 'asc' ? 1 : req.query.sort === 'desc' ? -1 : null;
+            const sortCondition = sortOrder ? { price: sortOrder } : {};
     
             // Đếm tổng số sản phẩm hiện có trong cơ sở dữ liệu phù hợp với điều kiện tìm kiếm
             const totalProducts = await Product.countDocuments(searchCondition);
@@ -98,7 +108,8 @@ class ProductController {
                 })
                 .populate('imageIDs') // Populate imageIDs to get image details
                 .skip(skip)
-                .limit(sl);
+                .limit(sl)
+                .sort(sortCondition); // Sắp xếp theo giá
     
             return res.status(200).json({
                 success: true,
@@ -114,6 +125,8 @@ class ProductController {
             });
         }
     }
+    
+    
     
     
     
