@@ -81,7 +81,6 @@ router.post('/', upload.array('images'), ProductController.uploadImage_Api);
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-
 router.get('/', ProductController.getAllProduct_Api);
 
 /**
@@ -133,5 +132,31 @@ router.delete('/:id', ProductController.deleteProduct_Api);
  *         description: Internal server error
  */
 router.put('/:id', ProductController.updateProduct_Api);
+
+/**
+ * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get a product by ID
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/:id', ProductController.getByID_Api);
 
 module.exports = router;

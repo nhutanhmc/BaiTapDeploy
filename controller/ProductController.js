@@ -70,15 +70,12 @@ class ProductController {
 
     async getAllProduct_Api(req, res) {
         try {
-            // Lấy giá trị page và sl từ query parameters, nếu không có thì mặc định là 1 và 5
-            const page = parseInt(req.query.page) || 1;
-            const sl = parseInt(req.query.sl) || 5;
+            // Lấy giá trị page và sl từ query parameters, nếu có
+            const page = req.query.page ? parseInt(req.query.page) : null;
+            const sl = req.query.sl ? parseInt(req.query.sl) : null;
     
             // Lấy giá trị search từ query parameters, nếu có
             const searchQuery = req.query.search || '';
-    
-            // Tính toán số lượng tài liệu cần bỏ qua
-            const skip = (page - 1) * sl;
     
             // Tạo điều kiện tìm kiếm
             let searchCondition = {};
@@ -96,20 +93,39 @@ class ProductController {
             // Đếm tổng số sản phẩm hiện có trong cơ sở dữ liệu phù hợp với điều kiện tìm kiếm
             const totalProducts = await Product.countDocuments(searchCondition);
     
-            // Lấy danh sách sản phẩm theo phân trang và điều kiện tìm kiếm
-            const products = await Product.find(searchCondition)
-                .populate('materialID')
-                .populate('gemstoneID')
-                .populate({
-                    path: 'productTypeID',
-                    populate: {
-                        path: 'categoryID' // Populate categoryID for productTypeID
-                    }
-                })
-                .populate('imageIDs') // Populate imageIDs to get image details
-                .skip(skip)
-                .limit(sl)
-                .sort(sortCondition); // Sắp xếp theo giá
+            let products;
+            if (page !== null && sl !== null) {
+                // Tính toán số lượng tài liệu cần bỏ qua
+                const skip = (page - 1) * sl;
+    
+                // Lấy danh sách sản phẩm theo phân trang và điều kiện tìm kiếm
+                products = await Product.find(searchCondition)
+                    .populate('materialID')
+                    .populate('gemstoneID')
+                    .populate({
+                        path: 'productTypeID',
+                        populate: {
+                            path: 'categoryID' // Populate categoryID for productTypeID
+                        }
+                    })
+                    .populate('imageIDs') // Populate imageIDs to get image details
+                    .skip(skip)
+                    .limit(sl)
+                    .sort(sortCondition); // Sắp xếp theo giá
+            } else {
+                // Lấy tất cả sản phẩm mà không phân trang
+                products = await Product.find(searchCondition)
+                    .populate('materialID')
+                    .populate('gemstoneID')
+                    .populate({
+                        path: 'productTypeID',
+                        populate: {
+                            path: 'categoryID' // Populate categoryID for productTypeID
+                        }
+                    })
+                    .populate('imageIDs') // Populate imageIDs to get image details
+                    .sort(sortCondition); // Sắp xếp theo giá
+            }
     
             return res.status(200).json({
                 success: true,
@@ -125,12 +141,6 @@ class ProductController {
             });
         }
     }
-    
-    
-    
-    
-    
-    
 
     async deleteProduct_Api(req, res) {
         try {
@@ -204,6 +214,39 @@ class ProductController {
                 success: true,
                 message: "Product updated successfully",
                 product: updatedProduct
+            });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                success: false,
+                message: err.message || "Unknown error"
+            });
+        }
+    }
+
+    async getByID_Api(req, res) {
+        try {
+            const product = await Product.findById(req.params.id)
+                .populate('materialID')
+                .populate('gemstoneID')
+                .populate({
+                    path: 'productTypeID',
+                    populate: {
+                        path: 'categoryID' // Populate categoryID for productTypeID
+                    }
+                })
+                .populate('imageIDs'); // Populate imageIDs to get image details
+            
+            if (!product) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Product không tồn tại!"
+                });
+            }
+            
+            return res.status(200).json({
+                success: true,
+                product
             });
         } catch (err) {
             console.error(err);
