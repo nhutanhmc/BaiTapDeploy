@@ -8,7 +8,7 @@ const Image = require('../model/imageModel');
 class ProductController {
     async uploadImage_Api(req, res) {
         try {
-            const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID } = req.body;
+            const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, quantity } = req.body;
 
             // Kiểm tra các ID liên quan
             if (!await Material.findById(materialID)) {
@@ -39,7 +39,7 @@ class ProductController {
 
             // Create new product
             const newProduct = await Product.create({
-                name, size, weight, description, price, color, materialID, gemstoneID, productTypeID
+                name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, quantity
             });
 
             // Upload images to Cloudinary and save references
@@ -70,14 +70,10 @@ class ProductController {
 
     async getAllProduct_Api(req, res) {
         try {
-            // Lấy giá trị page và sl từ query parameters, nếu có
             const page = req.query.page ? parseInt(req.query.page) : null;
             const sl = req.query.sl ? parseInt(req.query.sl) : null;
-    
-            // Lấy giá trị search từ query parameters, nếu có
             const searchQuery = req.query.search || '';
     
-            // Tạo điều kiện tìm kiếm
             let searchCondition = {};
             if (searchQuery) {
                 const searchTerms = searchQuery.split(' ').filter(term => term.trim() !== '');
@@ -86,51 +82,45 @@ class ProductController {
                 };
             }
     
-            // Lấy giá trị sort từ query parameters, nếu có
             const sortOrder = req.query.sort === 'asc' ? 1 : req.query.sort === 'desc' ? -1 : null;
             const sortCondition = sortOrder ? { price: sortOrder } : {};
     
-            // Đếm tổng số sản phẩm hiện có trong cơ sở dữ liệu phù hợp với điều kiện tìm kiếm
             const totalProducts = await Product.countDocuments(searchCondition);
     
             let products;
             if (page !== null && sl !== null) {
-                // Tính toán số lượng tài liệu cần bỏ qua
                 const skip = (page - 1) * sl;
-    
-                // Lấy danh sách sản phẩm theo phân trang và điều kiện tìm kiếm
                 products = await Product.find(searchCondition)
                     .populate('materialID')
                     .populate('gemstoneID')
                     .populate({
                         path: 'productTypeID',
                         populate: {
-                            path: 'categoryID' // Populate categoryID for productTypeID
+                            path: 'categoryID'
                         }
                     })
-                    .populate('imageIDs') // Populate imageIDs to get image details
+                    .populate('imageIDs')
                     .skip(skip)
                     .limit(sl)
-                    .sort(sortCondition); // Sắp xếp theo giá
+                    .sort(sortCondition);
             } else {
-                // Lấy tất cả sản phẩm mà không phân trang
                 products = await Product.find(searchCondition)
                     .populate('materialID')
                     .populate('gemstoneID')
                     .populate({
                         path: 'productTypeID',
                         populate: {
-                            path: 'categoryID' // Populate categoryID for productTypeID
+                            path: 'categoryID'
                         }
                     })
-                    .populate('imageIDs') // Populate imageIDs to get image details
-                    .sort(sortCondition); // Sắp xếp theo giá
+                    .populate('imageIDs')
+                    .sort(sortCondition);
             }
     
             return res.status(200).json({
                 success: true,
-                totalFetched: products.length, // Tổng số lượng sản phẩm được lấy ra
-                totalProducts, // Tổng số lượng sản phẩm hiện tại
+                totalFetched: products.length,
+                totalProducts,
                 products
             });
         } catch (err) {
@@ -152,7 +142,6 @@ class ProductController {
                 });
             }
 
-            // Delete product
             await Product.deleteOne({ _id: req.params.id });
 
             return res.status(200).json({
@@ -170,9 +159,8 @@ class ProductController {
 
     async updateProduct_Api(req, res) {
         try {
-            const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID } = req.body;
+            const { name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, quantity } = req.body;
     
-            // Kiểm tra các ID liên quan
             if (materialID && !await Material.findById(materialID)) {
                 return res.status(400).json({
                     success: false,
@@ -198,7 +186,7 @@ class ProductController {
             const updatedProduct = await Product.findByIdAndUpdate(
                 req.params.id,
                 {
-                    name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, categoryID: category._id
+                    name, size, weight, description, price, color, materialID, gemstoneID, productTypeID, categoryID: category._id, quantity
                 },
                 { new: true }
             ).populate('materialID').populate('gemstoneID').populate('productTypeID').populate('categoryID');
@@ -232,10 +220,10 @@ class ProductController {
                 .populate({
                     path: 'productTypeID',
                     populate: {
-                        path: 'categoryID' // Populate categoryID for productTypeID
+                        path: 'categoryID'
                     }
                 })
-                .populate('imageIDs'); // Populate imageIDs to get image details
+                .populate('imageIDs');
             
             if (!product) {
                 return res.status(404).json({

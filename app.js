@@ -18,6 +18,11 @@ const gemstoneRouter = require("./routes/gemstoneRouter");
 const materialRouter = require("./routes/materialRouter");
 const imageRouter = require("./routes/productRouter");
 const categoryRouter = require("./routes/categoryRouter");
+const customerRouter = require('./routes/customerRouter');
+const paymentRouter = require('./routes/paymentRouter');
+const storeRouter = require('./routes/storeRouter');
+const orderRouter = require('./routes/orderRouter');
+const orderDetailRouter = require('./routes/orderDetailRouter');
 
 const swaggerUi = require("swagger-ui-express");
 const passport = require('./config/passportConfig');
@@ -77,6 +82,11 @@ app.use("/gemstone", gemstoneRouter);
 app.use("/material", materialRouter);
 app.use("/products", imageRouter);
 app.use("/category", categoryRouter);
+app.use('/customers', customerRouter);
+app.use('/payments', paymentRouter);
+app.use('/stores', storeRouter);
+app.use('/orders', orderRouter);
+app.use('/orderDetails', orderDetailRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

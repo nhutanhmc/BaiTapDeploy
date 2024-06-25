@@ -70,16 +70,13 @@ const CustomerSchema = new mongoose.Schema({
 });
 
 const PaymentSchema = new mongoose.Schema({
-    cash: { type: Number },
-    bank: { type: String }
+    name: { type: String, required: true } // cash or bank
 });
 
 const StoreSchema = new mongoose.Schema({
     currentQuantity: { type: Number, required: true },
-    phone: { type: String },
-    location: { type: String },
-    lastUpdateInven: { type: Date, default: Date.now },
-    staff: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Staff' }]
+    phone: { type: String, required: true },
+    location: { type: String, required: true },
 });
 
 const StaffSchema = new mongoose.Schema({
