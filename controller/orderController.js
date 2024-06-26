@@ -180,6 +180,35 @@ class OrderController {
             return res.status(500).json({ message: err.message });
         }
     }
+
+    async searchOrdersByCustomerName(req, res) {
+        try {
+            const customerName = req.query.name; // Lấy tên khách hàng từ query string
+
+            // Tìm kiếm khách hàng dựa trên tên (không phân biệt hoa thường)
+            const customers = await Customer.find({
+                name: { $regex: new RegExp(customerName, 'i') } // Tìm kiếm không phân biệt hoa thường
+            });
+
+            // Lấy danh sách ID của các khách hàng tìm được
+            const customerIds = customers.map(customer => customer._id);
+
+            // Tìm các đơn hàng có customerID thuộc danh sách customerIds
+            const orders = await Order.find({ customerID: { $in: customerIds } })
+                .populate('customerID')
+                .populate('storeID')
+                .populate('payments')
+                .populate({
+                    path: 'orderDetails',
+                    populate: { path: 'productID' }
+                });
+
+            return res.status(200).json({ orders });
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: err.message });
+        }
+    }
     
 }
 
@@ -189,5 +218,6 @@ module.exports = {
     getAllOrders: orderController.getAllOrders.bind(orderController),
     getOrderById: orderController.getOrderById.bind(orderController),
     updateOrder: orderController.updateOrder.bind(orderController),
-    deleteOrder: orderController.deleteOrder.bind(orderController)
+    deleteOrder: orderController.deleteOrder.bind(orderController),
+    searchOrdersByCustomerName: orderController.searchOrdersByCustomerName.bind(orderController)
 };

@@ -8,10 +8,11 @@ router.use(authenticateToken); // Sử dụng middleware xác thực cho tất c
 router.route('/')
     .get(orderController.getAllOrders)
     .post(orderController.createOrder);
-
+router.get('/search-by-customer', orderController.searchOrdersByCustomerName);
 router.route('/:orderId')
     .get(orderController.getOrderById)
     .put(orderController.updateOrder)
     .delete(orderController.deleteOrder);
+
 
 module.exports = router;
