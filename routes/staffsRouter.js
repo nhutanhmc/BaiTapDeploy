@@ -1,116 +1,27 @@
-var express = require('express');
+const express = require('express');
 const router = express.Router();
-var staffController = require('../controller/staffController');
-const passport = require("../config/passportConfig"); // Nhớ require passport
+const passport = require('../passportConfig'); // Import passport configuration
+const staffController = require('../controllers/staffController');
 
-router.post('/refresh-token', staffController.refreshAccessToken);
+// Đăng nhập bằng Google
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// Khởi tạo quá trình xác thực Google
-// Khởi tạo quá trình xác thực Google
-router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// Callback sau khi xác thực (Đã loại bỏ failureRedirect)
-router.get('/auth/google/callback', 
+// Callback từ Google sau khi xác thực
+router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/auth/sign-in' }),
-  (req, res) => {
-    const { accessToken, refreshToken, role } = staffController.generateTokens(req.user);
-    console.log("Tokens:", accessToken, refreshToken, role);
-
-    // Đặt cookie cho accessToken
-    res.cookie("token", accessToken, { httpOnly: true });  // Chỉ cho phép server truy cập cookie
-
-    // Trả về dữ liệu JSON cho frontend
-    res.json({
-      success: true,
-      message: "Đăng nhập thành công!",
-      accessToken, // Vẫn gửi accessToken để frontend sử dụng nếu cần
-      refreshToken,
-      role,
-    });
-  }
+  staffController.googleAuthCallback
 );
 
+// Đăng nhập bằng JWT
+router.post('/login', staffController.loginWithJWT);
 
+// Refresh token
+router.post('/refresh-token', staffController.refreshAccessToken);
 
-  router.post('/auth/firebase', staffController.firebaseAuth);
-// staffsRouter.js
-/**
- * @swagger
- * tags:
- *   name: Staff
- *   description: API for managing staff
- */
-
-/**
- * @swagger
- * /staffsRouter/loginWithJWT:
- *   post:
- *     summary: Login with JWT
- *     tags: [Staff]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *       400:
- *         description: Bad request
- */
-router.post('/loginWithJWT', staffController.loginWithJWT);
-
-
-/**
- * @swagger
- * /staffsRouter/signup:
- *   post:
- *     summary: Sign up a new staff
- *     tags: [Staff]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               name:
- *                 type: string
- *               age:
- *                 type: number
- *               role:
- *                 type: string
- *     responses:
- *       201:
- *         description: Staff created successfully
- *       400:
- *         description: Bad request
- */
+// Đăng ký tài khoản
 router.post('/signup', staffController.signUp);
 
-/**
- * @swagger
- * /staffsRouter/getAllUser:
- *   get:
- *     summary: Get all users
- *     tags: [Staff]
- *     responses:
- *       200:
- *         description: List of all users
- *       500:
- *         description: Internal server error
- */
-router.get('/getAllUser', staffController.getAllUsers);
+// Lấy danh sách người dùng
+router.get('/users', staffController.getAllUsers);
 
 module.exports = router;
