@@ -14,20 +14,23 @@ router.get('/auth/google',
 router.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/auth/sign-in' }),
   (req, res) => {
-    console.log("User:", req.user); // In thông tin người dùng
     const { accessToken, refreshToken, role } = staffController.generateTokens(req.user);
     console.log("Tokens:", accessToken, refreshToken, role);
 
-    // Sử dụng res.json để trả về dữ liệu JSON cho frontend
+    // Đặt cookie cho accessToken
+    res.cookie("token", accessToken, { httpOnly: true });  // Chỉ cho phép server truy cập cookie
+
+    // Trả về dữ liệu JSON cho frontend
     res.json({
       success: true,
       message: "Đăng nhập thành công!",
-      accessToken,
+      accessToken, // Vẫn gửi accessToken để frontend sử dụng nếu cần
       refreshToken,
       role,
     });
   }
 );
+
 
 
   router.post('/auth/firebase', staffController.firebaseAuth);
