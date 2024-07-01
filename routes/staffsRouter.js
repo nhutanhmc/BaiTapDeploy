@@ -14,7 +14,7 @@ router.get('/auth/google',
 router.get('/auth/google/callback', 
   passport.authenticate('google'), 
   (req, res) => {
-    const { accessToken, refreshToken, role } = generateTokens(req.user); // Hàm này bạn tự định nghĩa để tạo token
+    const { accessToken, refreshToken, role } = staffController.generateTokens(req.user); // Hàm này bạn tự định nghĩa để tạo token
     const frontendUrl = "http://localhost:3000/signin"; // Thay bằng URL frontend của bạn
     res.redirect(`${frontendUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&role=${role}`);
   });
