@@ -14,7 +14,9 @@ router.get('/auth/google',
 router.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/auth/sign-in' }),
   (req, res) => {
+    console.log("User:", req.user); // In thông tin người dùng
     const { accessToken, refreshToken, role } = staffController.generateTokens(req.user);
+    console.log("Tokens:", accessToken, refreshToken, role);
 
     // Sử dụng res.json để trả về dữ liệu JSON cho frontend
     res.json({
