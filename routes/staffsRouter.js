@@ -12,12 +12,20 @@ router.get('/auth/google',
 
 // Callback sau khi xác thực (Đã loại bỏ failureRedirect)
 router.get('/auth/google/callback', 
-  passport.authenticate('google'), 
+  passport.authenticate('google', { failureRedirect: '/auth/sign-in' }),
   (req, res) => {
-    const { accessToken, refreshToken, role } = staffController.generateTokens(req.user); // Hàm này bạn tự định nghĩa để tạo token
-    const frontendUrl = "http://localhost:3000/signin"; // Thay bằng URL frontend của bạn
-    res.redirect(`${frontendUrl}?accessToken=${accessToken}&refreshToken=${refreshToken}&role=${role}`);
-  });
+    const { accessToken, refreshToken, role } = staffController.generateTokens(req.user);
+
+    // Sử dụng res.json để trả về dữ liệu JSON cho frontend
+    res.json({
+      success: true,
+      message: "Đăng nhập thành công!",
+      accessToken,
+      refreshToken,
+      role,
+    });
+  }
+);
 
 
   router.post('/auth/firebase', staffController.firebaseAuth);
