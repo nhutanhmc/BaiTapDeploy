@@ -19,10 +19,10 @@ passport.use(
           user = await Staff.create({
             googleId: profile.id,
             name: profile.displayName,
-            role: 'staff', // Default role if not specified
+            role: 'staff',
           });
         }
-        done(null, user); // Return user object
+        done(null, user);
       } catch (err) {
         done(err, null);
       }

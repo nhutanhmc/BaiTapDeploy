@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Staff = require("../model/staffModel");
 const admin = require('../config/firebaseAdmin');
-
 class staffController {
   constructor() {
     this.generateTokens = this.generateTokens.bind(this);
@@ -33,7 +32,7 @@ class staffController {
       if (!result) {
         return res.json({ success: false, message: "Sai mật khẩu!" });
       }
-      // Clear old access token
+      // Xoá access token cũ
       res.clearCookie("token");
       const { accessToken, refreshToken } = this.generateTokens(user);
       res.cookie("token", accessToken);
@@ -42,11 +41,11 @@ class staffController {
       return res.json({ success: false, message: err.message || "Lỗi" });
     }
   }
-
+  
   async googleAuthCallback(req, res) {
     try {
-      const user = req.user; // User object from passport
-      // Clear old access token
+      const user = req.user;
+      // Xoá access token cũ
       res.clearCookie("token");
       const { accessToken, refreshToken } = this.generateTokens(user);
       res.cookie('token', accessToken);
@@ -55,7 +54,7 @@ class staffController {
       return res.status(500).json({ success: false, message: 'Lỗi xử lý xác thực Google' });
     }
   }
-
+  
   async refreshAccessToken(req, res) {
     try {
       const { refreshToken } = req.body;
@@ -66,7 +65,7 @@ class staffController {
         if (err) {
           return res.status(403).json({ success: false, message: "Refresh token không hợp lệ!" });
         }
-        // Clear old access token
+        // Xoá access token cũ
         res.clearCookie("token");
         const { accessToken } = this.generateTokens(user);
         res.cookie("token", accessToken);
@@ -76,16 +75,16 @@ class staffController {
       return res.status(500).json({ success: false, message: err.message || "Lỗi" });
     }
   }
-
+  
   async firebaseAuth(req, res) {
     const idToken = req.body.idToken;
 
     try {
-      // Verify ID token
+      // Xác minh ID token
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       const uid = decodedToken.uid;
 
-      // Find or create user in your database
+      // Tìm hoặc tạo người dùng trong cơ sở dữ liệu của bạn
       let user = await Staff.findOne({ firebaseUid: uid });
       if (!user) {
         user = await Staff.create({
@@ -96,7 +95,7 @@ class staffController {
         });
       }
 
-      // Create custom tokens
+      // Tạo custom tokens
       const payload = { userId: user._id, role: user.role };
       const accessToken = jwt.sign(payload, "SE161473", { expiresIn: "15m" });
       const refreshToken = jwt.sign(payload, "SE161473_REFRESH", { expiresIn: "7d" });
@@ -108,14 +107,18 @@ class staffController {
     }
   }
 
+
+ 
+
   async signUp(req, res, next) {
     try {
       let { username, password, name, age, role } = req.body;
-
+  
       if (!username || !password || !name || !role) {
         return res.json({ success: false, message: "Vui lòng nhập đủ thông tin đăng ký!" });
       }
 
+    
       const existingUser = await Staff.findOne({ username });
       if (existingUser) {
         return res.json({ success: false, message: "Username đã tồn tại. Vui lòng chọn username khác!" });
@@ -130,6 +133,7 @@ class staffController {
         role
       });
 
+  
       return res.status(201).json({ success: true, message: "Đăng ký thành công!", user: newUser });
     } catch (err) {
 
@@ -137,7 +141,7 @@ class staffController {
     }
   }
 
-
+ 
   async getAllUsers(req, res, next) {
     try {
       const users = await Staff.find({});
@@ -146,7 +150,7 @@ class staffController {
       return res.status(500).json({ success: false, message: err.message || "Lỗi chưa xác định!" });
     }
   }
-
+  
 }
 
 module.exports = new staffController();

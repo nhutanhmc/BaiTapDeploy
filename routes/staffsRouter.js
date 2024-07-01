@@ -1,27 +1,98 @@
-const express = require('express');
+var express = require('express');
 const router = express.Router();
-const passport = require('../passportConfig'); // Import passport configuration
-const staffController = require('../controllers/staffController');
+var staffController = require('../controller/staffController');
+const passport = require("../config/passportConfig"); // Nhớ require passport
 
-// Đăng nhập bằng Google
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-// Callback từ Google sau khi xác thực
-router.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/auth/sign-in' }),
-  staffController.googleAuthCallback
-);
-
-// Đăng nhập bằng JWT
-router.post('/login', staffController.loginWithJWT);
-
-// Refresh token
 router.post('/refresh-token', staffController.refreshAccessToken);
 
-// Đăng ký tài khoản
+// Khởi tạo quá trình xác thực Google
+// Khởi tạo quá trình xác thực Google
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Callback sau khi xác thực (Đã loại bỏ failureRedirect)
+router.get('/auth/google/callback', 
+  passport.authenticate('google'), 
+  staffController.googleAuthCallback);
+
+  router.post('/auth/firebase', staffController.firebaseAuth);
+// staffsRouter.js
+/**
+ * @swagger
+ * tags:
+ *   name: Staff
+ *   description: API for managing staff
+ */
+
+/**
+ * @swagger
+ * /staffsRouter/loginWithJWT:
+ *   post:
+ *     summary: Login with JWT
+ *     tags: [Staff]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       400:
+ *         description: Bad request
+ */
+router.post('/loginWithJWT', staffController.loginWithJWT);
+
+
+/**
+ * @swagger
+ * /staffsRouter/signup:
+ *   post:
+ *     summary: Sign up a new staff
+ *     tags: [Staff]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: number
+ *               role:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Staff created successfully
+ *       400:
+ *         description: Bad request
+ */
 router.post('/signup', staffController.signUp);
 
-// Lấy danh sách người dùng
-router.get('/users', staffController.getAllUsers);
+/**
+ * @swagger
+ * /staffsRouter/getAllUser:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Staff]
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/getAllUser', staffController.getAllUsers);
 
 module.exports = router;
